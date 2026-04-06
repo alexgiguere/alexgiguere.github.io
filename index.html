@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex — Projects</title>
+  <meta name="description" content="Alex's coding projects — automation bots, AI apps, and arbitrage tools." />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0d0d0f;
+      --surface:    #141417;
+      --border:     #22222a;
+      --border-h:   #3a3a48;
+      --text:       #e8e8f0;
+      --muted:      #6b6b80;
+      --accent:     #7c6af7;
+      --accent-2:   #4fc3f7;
+      --green:      #4ade80;
+      --orange:     #fb923c;
+      --pink:       #f472b6;
+      --yellow:     #facc15;
+      --radius:     14px;
+      --font-mono:  'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Google Fonts ─────────────────────────────────────────── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    /* ── Layout ───────────────────────────────────────────────── */
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Noise overlay ────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    header {
+      padding: 96px 0 72px;
+      position: relative;
+    }
+
+    .prompt {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prompt::before {
+      content: '▸';
+      font-size: 16px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: var(--accent);
+      margin-left: 2px;
+      animation: blink 1.1s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    h1 span.hi { color: var(--muted); font-weight: 300; }
+
+    .tagline {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    .tagline strong { color: var(--text); font-weight: 500; }
+
+    .header-links {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.18s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6a58e8; transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border-h);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--text); transform: translateY(-1px); }
+
+    /* ── Section title ────────────────────────────────────────── */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Project grid ─────────────────────────────────────────── */
+    .projects {
+      padding-bottom: 100px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Project card ─────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, var(--accent));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .card-links {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-link {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+    .icon-link:hover { color: var(--text); }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .card-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--card-accent, var(--accent));
+      margin-top: 2px;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-desc strong { color: var(--text); font-weight: 500; }
+
+    /* ── Tags ─────────────────────────────────────────────────── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── Status badge ─────────────────────────────────────────── */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-dot.weekly {
+      background: var(--orange);
+      box-shadow: 0 0 6px var(--orange);
+    }
+
+    .status-dot.idle {
+      background: var(--muted);
+      box-shadow: none;
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    footer span {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    footer a:hover { color: var(--text); }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header { padding: 64px 0 48px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <header>
+    <div class="prompt">~/projects<span class="cursor"></span></div>
+    <h1><span class="hi">Hi, I'm </span>Alex.</h1>
+    <p class="tagline">
+      I build <strong>automation bots</strong>, <strong>AI-powered apps</strong>, and
+      <strong>arbitrage tools</strong> — mostly things that make computers do the boring work.
+    </p>
+    <div class="header-links">
+      <a class="btn btn-primary" href="https://github.com/alexgiguere" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- ── Projects ───────────────────────────────────────────────── -->
+  <section class="projects">
+    <div class="section-label">Projects</div>
+    <div class="grid">
+
+      <!-- Shorts -->
+      <div class="card" style="--card-accent: #7c6af7;">
+        <div class="card-header">
+          <span class="card-icon">🎬</span>
+          <div class="card-links">
+            <a class="icon-link" href="https://github.com/alexgiguere/Shorts" target="_blank" rel="noopener" title="Source">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">Shorts Pipeline</div>
+          <div class="card-subtitle">Fully autonomous · 2 videos/day</div>
+        </div>
+        <p class="card-desc">
+          End-to-end pipeline that <strong>generates and posts 2 YouTube Shorts daily</strong> with zero input.
+          Detects trending gaming topics via Google Trends, Reddit, and Twitch — writes the script with Claude,
+          generates a voiceover, composes the video with gameplay footage, and uploads it automatically at 8 AM and 6 PM.
+        </p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Claude API</span>
+          <span class="tag">FFmpeg</span>
+          <span class="tag">YouTube API</span>
+          <span class="tag">edge-TTS</span>
+          <span class="tag">Google Trends</span>
+          <span class="tag">Twitch API</span>
+        </div>
+        <div class="status">
+          <span class="status-dot"></span>
+          Running — posts daily at 08:00 &amp; 18:00
+        </div>
+      </div>
+
+      <!-- AI Girlfriend -->
+      <div class="card" style="--card-accent: #f472b6;">
+        <div class="card-header">
+          <span class="card-icon">💬</span>
+          <div class="card-links">
+            <a class="icon-link" href="https://github.com/alexgiguere/AIGIRLFRIEND" target="_blank" rel="noopener" title="Source">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">AI Girlfriend</div>
+          <div class="card-subtitle">Full-stack · Live2D · Relationship system</div>
+        </div>
+        <p class="card-desc">
+          A full-stack AI companion app with a <strong>Live2D animated avatar</strong>, persistent memory, and a
+          relationship progression system. Powered by Claude — the character evolves across 5 intimacy levels
+          as you interact. Features a call mode, push notifications, and a real-time relationship XP bar.
+        </p>
+        <div class="tags">
+          <span class="tag">React</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Claude API</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Live2D</span>
+          <span class="tag">Tailwind</span>
+          <span class="tag">Web Push</span>
+        </div>
+        <div class="status">
+          <span class="status-dot idle"></span>
+          Local / self-hosted
+        </div>
+      </div>
+
+      <!-- PokeDealz -->
+      <div class="card" style="--card-accent: #facc15;">
+        <div class="card-header">
+          <span class="card-icon">🃏</span>
+          <div class="card-links">
+            <a class="icon-link" href="https://github.com/alexgiguere/PokeDealz" target="_blank" rel="noopener" title="Source">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">PokeDealz</div>
+          <div class="card-subtitle">Arbitrage bot · TCGPlayer ↔ eBay Canada</div>
+        </div>
+        <p class="card-desc">
+          Monitors <strong>TCGPlayer</strong> and <strong>eBay Canada</strong> in real-time to surface Pokémon
+          TCG cards with a 25%+ profit margin after fees. Converts USD→CAD live, accounts for platform fees
+          and shipping, and alerts via Discord. Scans the full watch list every 60 seconds with a CLI dashboard.
+        </p>
+        <div class="tags">
+          <span class="tag">TypeScript</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Playwright</span>
+          <span class="tag">TCGPlayer API</span>
+          <span class="tag">Discord</span>
+        </div>
+        <div class="status">
+          <span class="status-dot idle"></span>
+          On-demand
+        </div>
+      </div>
+
+      <!-- EpicClaimer -->
+      <div class="card" style="--card-accent: #4fc3f7;">
+        <div class="card-header">
+          <span class="card-icon">🎮</span>
+          <div class="card-links">
+            <a class="icon-link" href="https://github.com/alexgiguere/EpicClaimer" target="_blank" rel="noopener" title="Source">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">Epic Claimer</div>
+          <div class="card-subtitle">Automated · Every Thursday 18:00</div>
+        </div>
+        <p class="card-desc">
+          Automatically claims <strong>Epic Games free weekly games</strong> every Thursday at 6 PM.
+          Filters games through the IGDB quality database before claiming — skips shovelware, grabs anything
+          worth keeping. Uses Playwright with a persistent Chrome session and sends Discord notifications.
+        </p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Playwright</span>
+          <span class="tag">IGDB API</span>
+          <span class="tag">Chrome CDP</span>
+          <span class="tag">Discord</span>
+        </div>
+        <div class="status">
+          <span class="status-dot weekly"></span>
+          Running — triggers every Thursday
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────── -->
+  <footer>
+    <span>Alex · <a href="https://github.com/alexgiguere" target="_blank" rel="noopener">github.com/alexgiguere</a></span>
+    <span>Built with HTML · Deployed on GitHub Pages</span>
+  </footer>
+
+</div>
+</body>
+</html>
